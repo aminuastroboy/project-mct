@@ -1,17 +1,13 @@
 {
-  "name": "menstrual-tracker-v3",
-  "version": "1.0.0",
+  "name": "menstrual-tracker",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "lucide-react": "^0.394.0"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.4.10",
-    "postcss": "^8.4.35",
-    "autoprefixer": "^10.4.20"
+    "lucide-react": "^0.394.0",
+    "framer-motion": "^11.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
