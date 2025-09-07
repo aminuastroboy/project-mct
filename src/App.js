@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Home, Calendar, Smile } from "lucide-react";
+import { Home, Calendar, Smile, PlusCircle } from "lucide-react";
 
 /** ----------------------- persistence ----------------------- **/
 const CYCLES_KEY = "cb_cycles_v1";
@@ -55,13 +55,99 @@ export default function App() {
     setCycles([{ id: Date.now(), startDate }, ...cycles]);
   };
 
-  const updateCycleDate = (id, newDate) => {
-    setCycles(prev =>
-      prev.map(c => (c.id === id ? { ...c, startDate: newDate } : c))
-          .sort((a,b)=> new Date(b.startDate)-new Date(a.startDate))
+  /** ---------------- Home Screen ---------------- **/
+  const HomeScreen = () => (
+    <div className="flex flex-col items-center gap-6">
+      <p className="text-lg font-medium">{new Date().toDateString()}</p>
+      <div className="relative w-40 h-40 flex items-center justify-center">
+        <svg className="absolute inset-0 w-full h-full -rotate-90">
+          <circle cx="80" cy="80" r="70" stroke="#fde8ef" strokeWidth="16" fill="none"/>
+          <circle cx="80" cy="80" r="70" stroke="#f4a6c6" strokeWidth="16" fill="none"
+            strokeDasharray={440} strokeDashoffset={dayOfPeriod ? 440 - (dayOfPeriod / PERIOD_DAYS) * 440 : 440}
+            strokeLinecap="round"/>
+        </svg>
+        {dayOfPeriod ? (
+          <div className="text-center">
+            <div className="text-3xl font-bold">{dayOfPeriod}</div>
+            <div className="text-sm text-gray-600">Day of Period</div>
+          </div>
+        ) : (
+          <div className="text-center text-gray-600">Not on period</div>
+        )}
+      </div>
+      <button onClick={addTodayStart} className="btn btn-primary flex items-center gap-2">
+        <PlusCircle size={18}/> Log Period Start
+      </button>
+      <p className="text-sm text-gray-600">Predicted Next: {predictedNext}</p>
+    </div>
+  );
+
+  /** ---------------- Calendar Screen ---------------- **/
+  const CalendarScreen = () => {
+    const today = new Date();
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const days = [];
+    for (let i = 1; i <= monthEnd.getDate(); i++) days.push(new Date(today.getFullYear(), today.getMonth(), i));
+
+    // Mark period & fertile
+    const periodDays = new Set();
+    const fertileDays = new Set();
+    cycles.forEach(c => {
+      for (let i = 0; i < PERIOD_DAYS; i++) periodDays.add(iso(addDays(c.startDate, i)));
+      const fertile = addDays(c.startDate, 14);
+      for (let i = -2; i <= 2; i++) fertileDays.add(iso(addDays(fertile, i)));
+    });
+
+    return (
+      <div>
+        <h2 className="text-center font-semibold mb-2">
+          {today.toLocaleString("default", { month: "long" })} {today.getFullYear()}
+        </h2>
+        <div className="grid grid-cols-7 text-center text-xs mb-1 text-gray-500">
+          <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+        </div>
+        <div className="grid grid-cols-7 gap-1 text-center text-sm">
+          {Array(monthStart.getDay()).fill(null).map((_,i)=><div key={"b"+i}></div>)}
+          {days.map(d=>{
+            const dISO = iso(d);
+            const isPeriod = periodDays.has(dISO);
+            const isFertile = fertileDays.has(dISO);
+            return (
+              <div key={dISO} className={`rounded-full w-8 h-8 flex items-center justify-center mx-auto 
+                ${isPeriod?"bg-rose-300 text-white":isFertile?"bg-mint text-white":""}`}>
+                {d.getDate()}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex gap-4 justify-center mt-4 text-xs">
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-rose-300"></span>Period</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-mint"></span>Fertile</span>
+        </div>
+      </div>
     );
   };
-  const deleteCycle = (id) => setCycles(prev => prev.filter(c => c.id !== id));
+
+  /** ---------------- Logs Screen ---------------- **/
+  const categories = ["Mood", "Cramps", "Flow", "Energy"];
+  const LogsScreen = () => {
+    const todayLog = logs[todayISO] || {};
+    const toggle = (cat) => {
+      setLogs({ ...logs, [todayISO]: { ...todayLog, [cat]: !todayLog[cat] } });
+    };
+    return (
+      <div className="space-y-3">
+        {categories.map(c=>(
+          <button key={c} onClick={()=>toggle(c)}
+            className={`w-full card flex justify-between ${todayLog[c]?"bg-petal2":""}`}>
+            <span>{c}</span>
+            <span>{todayLog[c]?"✓":""}</span>
+          </button>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-petal text-[color:var(--ink)] flex items-stretch justify-center">
@@ -71,15 +157,9 @@ export default function App() {
         </header>
 
         <main className="flex-1">
-          {tab === "home" && (
-            <div>Home content here</div>
-          )}
-          {tab === "calendar" && (
-            <div>Calendar content here</div>
-          )}
-          {tab === "logs" && (
-            <div>Logs content here</div>
-          )}
+          {tab === "home" && <HomeScreen/>}
+          {tab === "calendar" && <CalendarScreen/>}
+          {tab === "logs" && <LogsScreen/>}
         </main>
 
         <nav className="mt-4 bg-white rounded-3xl shadow-soft px-6 py-3">
