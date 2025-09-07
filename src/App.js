@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { Home, Calendar, Smile, PlusCircle } from "lucide-react";
 import FlowerRing from "./FlowerRing";
+import CalendarView from "./CalendarView";
+import Logs from "./Logs";
 
 export default function App() {
   const [tab, setTab] = useState("home");
+
+  // Example cycle data
+  const cycles = [
+    { id: 1, start: "Aug 10", duration: 5, days: [10, 11, 12, 13, 14] },
+    { id: 2, start: "Sep 7", duration: 4, days: [7, 8, 9, 10] }
+  ];
+
   const dayOfPeriod = 3;
   const PERIOD_DAYS = 28;
-  const predictedNext = "Sep 28, 2025";
+  const predictedNext = "Oct 5, 2025";
 
   return (
     <div className="min-h-screen bg-pink-50 flex flex-col justify-between">
@@ -23,8 +32,9 @@ export default function App() {
             </p>
           </div>
         )}
-        {tab === "calendar" && <p>📅 Calendar screen coming soon...</p>}
-        {tab === "logs" && <p>📝 Logs screen coming soon...</p>}
+
+        {tab === "calendar" && <CalendarView cycles={cycles} />}
+        {tab === "logs" && <Logs cycles={cycles} />}
       </div>
 
       <nav className="bg-white rounded-t-3xl shadow-md px-6 py-3">
