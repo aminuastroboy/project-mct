@@ -1,11 +1,27 @@
-# Menstrual Cycle Tracker
+# 🌸 Menstrual Cycle Tracker
 
-A simple React + Tailwind menstrual cycle tracker (localStorage-based).
+A simple menstrual cycle tracking app built with React + Tailwind.  
+Deployed easily on **Netlify**.
 
-![App screenshot](public/screenshot.png)
+## 🚀 Features
+- Log period start dates
+- Edit / delete past entries
+- Calendar view with highlighted days
+- Predicts next period (default 28-day cycle)
+- Saves data locally (localStorage)
 
-## Quick start
+## 🛠 Setup
+```bash
+npm install
+npm start
+```
 
-1. `npm install`
-2. `npm run build`
-3. Push to GitHub & connect to Netlify (or drag `build` to Netlify)
+## 📦 Build
+```bash
+npm run build
+```
+
+## 🌐 Deploy to Netlify
+- Push this repo to GitHub
+- Connect to Netlify → it will detect `npm run build`
+- Publish directory: `build`
