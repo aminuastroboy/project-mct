@@ -1,16 +1,26 @@
-# Cycle Bloom – Menstrual Tracker (Mobile-first)
+# 🌸 Menstrual Tracker App
 
-Mobile-style UI with three tabs (Home, Calendar, Logs).  
-Uses lucide-react for icons.
+A demo menstrual cycle tracker with animated gradient backgrounds, floating petals, login/register demo flow, and cycle logs.
 
-## Run
-```bash
-npm install
-npm start
-```
-## Build
-```bash
-npm run build
-```
-## Deploy (Netlify)
-- Connect repo → build command `npm run build` → publish `build/`.
+## 🚀 Quick Start
+
+1. Install dependencies
+   ```bash
+   npm install
+   ```
+
+2. Run development server
+   ```bash
+   npm start
+   ```
+
+3. Build for production
+   ```bash
+   npm run build
+   ```
+
+## 🛠 Stack
+- React 18
+- TailwindCSS 3
+- Framer Motion
+- Lucide Icons

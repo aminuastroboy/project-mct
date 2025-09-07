@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-pink-50 font-sans;
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-animated {
+  background: linear-gradient(270deg, #fce7f3, #fbcfe8, #f9a8d4, #f472b6);
+  background-size: 600% 600%;
+  animation: gradientShift 18s ease infinite;
 }
