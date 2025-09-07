@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Confetti from "react-confetti";
 import FlowerRing from "./FlowerRing";
 
@@ -39,7 +39,6 @@ function App() {
     setCycles(cycles.map((c) => (c.id === id ? { ...c, ...updated } : c)));
   };
 
-  // Home dynamic cycle info
   let dayOfPeriod = null;
   let totalDays = 28;
   if (cycles.length > 0) {
@@ -53,90 +52,107 @@ function App() {
     totalDays = latest.duration || 28;
   }
 
+  const screenVariants = {
+    initial: { opacity: 0, x: 50 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -50 },
+    transition: { duration: 0.3 }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-pink-100 p-6 pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-pink-100 p-6 pb-24 relative overflow-hidden">
       {celebrate && <Confetti />}
       <h1 className="text-2xl font-bold text-pink-600 text-center mb-6">
         🌸 Cycle Tracker
       </h1>
 
-      <div className="bg-white rounded-3xl shadow-xl p-6">
-        {tab === "home" && (
-          <div className="flex flex-col items-center">
-            <FlowerRing
-              dayOfPeriod={dayOfPeriod}
-              totalDays={totalDays}
-              celebrate={celebrate}
-            />
-            <p className="mt-4 text-gray-700 text-center">
-              {dayOfPeriod
-                ? `You are on day ${dayOfPeriod} of your cycle.`
-                : "Track your periods, fertile windows, and notes with ease."}
-            </p>
-            <motion.button
-              onClick={() => setShowForm(true)}
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="mt-4 px-6 py-3 bg-pink-400 hover:bg-pink-500 text-white font-semibold rounded-full shadow-lg"
-            >
-              ➕ Quick Add Cycle
-            </motion.button>
-          </div>
-        )}
+      <div className="bg-white rounded-3xl shadow-xl p-6 min-h-[60vh]">
+        <AnimatePresence mode="wait">
+          {tab === "home" && (
+            <motion.div key="home" {...screenVariants}>
+              <div className="flex flex-col items-center">
+                <FlowerRing
+                  dayOfPeriod={dayOfPeriod}
+                  totalDays={totalDays}
+                  celebrate={celebrate}
+                />
+                <p className="mt-4 text-gray-700 text-center">
+                  {dayOfPeriod
+                    ? `You are on day ${dayOfPeriod} of your cycle.`
+                    : "Track your periods, fertile windows, and notes with ease."}
+                </p>
+                <motion.button
+                  onClick={() => setShowForm(true)}
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="mt-4 px-6 py-3 bg-pink-400 hover:bg-pink-500 text-white font-semibold rounded-full shadow-lg"
+                >
+                  ➕ Quick Add Cycle
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
 
-        {tab === "calendar" && <Calendar cycles={cycles} />}
+          {tab === "calendar" && (
+            <motion.div key="calendar" {...screenVariants}>
+              <Calendar cycles={cycles} />
+            </motion.div>
+          )}
 
-        {tab === "logs" && (
-          <div>
-            <h2 className="text-lg font-semibold text-pink-600 mb-3">
-              Logged Cycles
-            </h2>
-            {cycles.length === 0 ? (
-              <p className="text-gray-500">No cycles yet.</p>
-            ) : (
-              <ul className="space-y-2">
-                {cycles.map((c) => (
-                  <li
-                    key={c.id}
-                    className="p-3 bg-pink-50 rounded-xl flex justify-between items-center"
-                  >
-                    <div>
-                      <p>
-                        <span className="font-medium">Start:</span> {c.start}
-                      </p>
-                      <p>
-                        <span className="font-medium">Duration:</span>{" "}
-                        {c.duration} days
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() =>
-                          editCycle(c.id, {
-                            duration: prompt("New duration:", c.duration),
-                          })
-                        }
-                        className="text-blue-500"
+          {tab === "logs" && (
+            <motion.div key="logs" {...screenVariants}>
+              <div>
+                <h2 className="text-lg font-semibold text-pink-600 mb-3">
+                  Logged Cycles
+                </h2>
+                {cycles.length === 0 ? (
+                  <p className="text-gray-500">No cycles yet.</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {cycles.map((c) => (
+                      <li
+                        key={c.id}
+                        className="p-3 bg-pink-50 rounded-xl flex justify-between items-center"
                       >
-                        ✏️
-                      </button>
-                      <button
-                        onClick={() => deleteCycle(c.id)}
-                        className="text-red-500"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
+                        <div>
+                          <p>
+                            <span className="font-medium">Start:</span>{" "}
+                            {c.start}
+                          </p>
+                          <p>
+                            <span className="font-medium">Duration:</span>{" "}
+                            {c.duration} days
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() =>
+                              editCycle(c.id, {
+                                duration: prompt("New duration:", c.duration),
+                              })
+                            }
+                            className="text-blue-500"
+                          >
+                            ✏️
+                          </button>
+                          <button
+                            onClick={() => deleteCycle(c.id)}
+                            className="text-red-500"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Form modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
           <form
@@ -185,7 +201,7 @@ function App() {
         </div>
       )}
 
-      {/* Bottom nav fixed */}
+      {/* Bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow px-6 py-3">
         <div className="grid grid-cols-3 text-center text-sm">
           <button
