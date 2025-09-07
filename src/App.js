@@ -54,7 +54,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-pink-100 p-6">
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-pink-100 p-6 pb-24">
       {celebrate && <Confetti />}
       <h1 className="text-2xl font-bold text-pink-600 text-center mb-6">
         🌸 Cycle Tracker
@@ -103,8 +103,7 @@ function App() {
                   >
                     <div>
                       <p>
-                        <span className="font-medium">Start:</span>{" "}
-                        {c.start}
+                        <span className="font-medium">Start:</span> {c.start}
                       </p>
                       <p>
                         <span className="font-medium">Duration:</span>{" "}
@@ -186,8 +185,8 @@ function App() {
         </div>
       )}
 
-      {/* Bottom nav */}
-      <nav className="mt-6 bg-white rounded-3xl shadow px-6 py-3">
+      {/* Bottom nav fixed */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow px-6 py-3">
         <div className="grid grid-cols-3 text-center text-sm">
           <button
             onClick={() => setTab("home")}
