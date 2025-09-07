@@ -1,103 +1,108 @@
 import React, { useState, useEffect } from "react";
-import { Home, Calendar, Smile, PlusCircle } from "lucide-react";
 import FlowerRing from "./FlowerRing";
 import CalendarView from "./CalendarView";
 import Logs from "./Logs";
+import { Calendar, Notebook, Home } from "lucide-react";
 
 export default function App() {
   const [tab, setTab] = useState("home");
   const [cycles, setCycles] = useState([]);
   const [notes, setNotes] = useState({});
 
-  const dayOfPeriod = 3;
-  const PERIOD_DAYS = 28;
-  const predictedNext = "Oct 5, 2025";
-
-  // Load from localStorage on mount
   useEffect(() => {
-    const savedCycles = localStorage.getItem("cycles");
-    const savedNotes = localStorage.getItem("notes");
-    if (savedCycles) setCycles(JSON.parse(savedCycles));
-    if (savedNotes) setNotes(JSON.parse(savedNotes));
+    const savedCycles = JSON.parse(localStorage.getItem("cycles")) || [];
+    const savedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+    setCycles(savedCycles);
+    setNotes(savedNotes);
   }, []);
 
-  // Save whenever data changes
   useEffect(() => {
     localStorage.setItem("cycles", JSON.stringify(cycles));
-  }, [cycles]);
-
-  useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
+  }, [cycles, notes]);
 
-  // Example default data if empty
-  useEffect(() => {
-    if (cycles.length === 0) {
-      setCycles([
-        { id: 1, start: "Aug 10", duration: 5, days: [10, 11, 12, 13, 14] },
-        { id: 2, start: "Sep 7", duration: 4, days: [7, 8, 9, 10] }
-      ]);
-    }
-  }, [cycles]);
+  const addCycle = (start, duration) => {
+    const newCycle = {
+      id: Date.now(),
+      start,
+      duration: parseInt(duration, 10),
+    };
+    setCycles([...cycles, newCycle]);
+  };
+
+  const deleteCycle = (id) => {
+    setCycles(cycles.filter(c => c.id !== id));
+    const newNotes = { ...notes };
+    delete newNotes[id];
+    setNotes(newNotes);
+  };
+
+  const updateCycle = (id, newData) => {
+    setCycles(
+      cycles.map(c =>
+        c.id === id
+          ? { ...c, start: newData.start, duration: parseInt(newData.duration, 10) }
+          : c
+      )
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-pink-50 flex flex-col justify-between">
-      <div className="p-6 flex-1">
+    <div className="min-h-screen bg-pink-50 flex flex-col">
+      <header className="bg-pink-400 text-white p-4 text-center font-bold text-lg shadow-md">
+        🌸 Menstrual Cycle Tracker
+      </header>
+
+      <main className="flex-1 p-4 overflow-y-auto">
         {tab === "home" && (
-          <div className="flex flex-col items-center gap-6">
-            <p className="text-lg font-medium">{new Date().toDateString()}</p>
-            <FlowerRing dayOfPeriod={dayOfPeriod} totalDays={PERIOD_DAYS} />
-            <button
-              onClick={() =>
-                setCycles([
-                  ...cycles,
-                  {
-                    id: Date.now(),
-                    start: new Date().toDateString(),
-                    duration: 5,
-                    days: [new Date().getDate()]
-                  }
-                ])
-              }
-              className="bg-pink-400 text-white rounded-xl px-4 py-2 flex items-center gap-2"
-            >
-              <PlusCircle size={18} /> Log Period Start
-            </button>
-            <p className="text-sm text-gray-600">
-              Predicted Next: {predictedNext}
+          <div className="flex flex-col items-center">
+            <FlowerRing dayOfPeriod={3} totalDays={28} />
+            <p className="mt-4 text-gray-700 text-center">
+              Track your periods, fertile windows, and notes with ease.
             </p>
           </div>
         )}
 
-        {tab === "calendar" && <CalendarView cycles={cycles} />}
-        {tab === "logs" && <Logs cycles={cycles} notes={notes} setNotes={setNotes} />}
-      </div>
+        {tab === "calendar" && (
+          <CalendarView cycles={cycles} setCycles={setCycles} />
+        )}
 
-      <nav className="bg-white rounded-t-3xl shadow-md px-6 py-3">
+        {tab === "logs" && (
+          <Logs
+            cycles={cycles}
+            notes={notes}
+            setNotes={setNotes}
+            deleteCycle={deleteCycle}
+            updateCycle={updateCycle}
+          />
+        )}
+      </main>
+
+      <nav className="mt-2 bg-white rounded-t-3xl shadow-lg px-6 py-3">
         <div className="grid grid-cols-3 text-center text-sm">
           <button
             onClick={() => setTab("home")}
-            className={`py-2 flex flex-col items-center ${
-              tab === "home" ? "text-pink-500" : ""
+            className={`py-2 rounded-2xl flex flex-col items-center ${
+              tab === "home" ? "bg-pink-100 text-pink-600 font-medium" : ""
             }`}
           >
             <Home size={20} /> Home
           </button>
           <button
             onClick={() => setTab("calendar")}
-            className={`py-2 flex flex-col items-center ${
-              tab === "calendar" ? "text-pink-500" : ""
+            className={`py-2 rounded-2xl flex flex-col items-center ${
+              tab === "calendar" ? "bg-pink-100 text-pink-600 font-medium" : ""
             }`}
           >
             <Calendar size={20} /> Calendar
           </button>
           <button
             onClick={() => setTab("logs")}
-            className={`py-2 flex flex-col items-center ${
-              tab === "logs" ? "text-pink-500" : ""
+            className={`py-2 rounded-2xl flex flex-col items-center ${
+              tab === "logs" ? "bg-pink-100 text-pink-600 font-medium" : ""
             }`}
           >
-            <Smile size={20} /> Logs
+            <Notebook size={20} /> Logs
           </button>
         </div>
       </nav>
