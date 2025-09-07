@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 
 export default function FlowerRing({ dayOfPeriod, totalDays }) {
@@ -7,10 +6,10 @@ export default function FlowerRing({ dayOfPeriod, totalDays }) {
   const angleStep = (2 * Math.PI) / petals;
 
   return (
-    <svg width="160" height="160" viewBox="0 0 160 160" className="mx-auto">
+    <svg width="200" height="200" viewBox="0 0 160 160" className="mx-auto">
       <motion.g
         animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+        transition={{ repeat: Infinity, duration: 30, ease: "linear" }}
         style={{ transformOrigin: "80px 80px" }}
       >
         {[...Array(petals)].map((_, i) => {
@@ -24,7 +23,7 @@ export default function FlowerRing({ dayOfPeriod, totalDays }) {
               cx={cx}
               cy={cy}
               r={15}
-              fill={active ? "#f4a6c6" : "#fde8ef"}
+              fill={active ? "#f472b6" : "#fde8ef"}
               className={active ? "animate-pulse" : ""}
             />
           );
