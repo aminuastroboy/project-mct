@@ -1,7 +1,7 @@
 # Cycle Bloom – Menstrual Tracker (Mobile-first)
 
 Mobile-style UI with three tabs (Home, Calendar, Logs).  
-Soft pastel look matching the original mockup.
+Uses lucide-react for icons.
 
 ## Run
 ```bash
