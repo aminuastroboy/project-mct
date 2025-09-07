@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-export default function Logs({ cycles }) {
-  const [notes, setNotes] = useState({});
-
+export default function Logs({ cycles, notes, setNotes }) {
   const handleChange = (id, value) => {
     setNotes({ ...notes, [id]: value });
   };
