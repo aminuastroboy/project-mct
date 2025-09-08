@@ -1,26 +1,12 @@
-# 🌸 Menstrual Tracker App
+# 🌸 Menstrual Tracker v2
 
-A demo menstrual cycle tracker with animated gradient backgrounds, floating petals, login/register demo flow, and cycle logs.
+A simple menstrual cycle tracker with:
+- Flower-style Home screen
+- Calendar view (period & fertile predictions)
+- Insights dashboard (overview, history graphs, ovulation, tips, reminders)
+- Pastel confetti celebrations 🎉
 
-## 🚀 Quick Start
-
-1. Install dependencies
-   ```bash
-   npm install
-   ```
-
-2. Run development server
-   ```bash
-   npm start
-   ```
-
-3. Build for production
-   ```bash
-   npm run build
-   ```
-
-## 🛠 Stack
-- React 18
-- TailwindCSS 3
-- Framer Motion
-- Lucide Icons
+## 🚀 Run Locally
+```bash
+npm install
+npm start
