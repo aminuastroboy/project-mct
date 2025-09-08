@@ -1,7 +1,1 @@
-# Menstrual Tracker V2
-
-Simple menstrual cycle tracker (CRA) with:
-- Add logs (persist to localStorage)
-- Basic Flower Cycle overview
-- Calendar placeholder
-- Deploy-ready for Vercel (homepage + vercel.json included)
+# Menstrual Tracker v2\n\nRun locally:\n1. npm install\n2. npm start\n\nBuild:\n1. npm run build\n\nDeploy:\n- Vercel: Output directory = build\n- Netlify: publish = build
