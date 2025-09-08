@@ -1,4 +1,3 @@
-
 import React from 'react';
 const tips = [
   'Stay hydrated and eat iron-rich foods during your period.',

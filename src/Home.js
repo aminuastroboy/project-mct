@@ -1,4 +1,3 @@
-
 import React, {useState, useEffect} from 'react';
 import FlowerWheel from './components/FlowerWheel';
 import CycleForm from './components/CycleForm';
