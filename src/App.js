@@ -1,49 +1,73 @@
 import React, { useState } from "react";
-import Home from "./Home";
-import Calendar from "./Calendar";
-import Insights from "./Insights";
-import { CalendarDays, BarChart3, Home as HomeIcon } from "lucide-react";
+import { Card, CardContent } from "./components/ui/card";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { Avatar } from "./components/ui/avatar";
+import { Tabs } from "./components/ui/tabs";
 
-export default function App() {
+function App() {
   const [tab, setTab] = useState("home");
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-pink-50 to-pink-100">
-      <div className="flex-1 overflow-y-auto">
-        {tab === "home" && <Home />}
-        {tab === "calendar" && <Calendar />}
-        {tab === "insights" && <Insights />}
+    <div className="min-h-screen bg-pink-50 flex flex-col">
+      <div className="flex-1 p-6">
+        {tab === "home" && (
+          <Card>
+            <CardContent>
+              <h1 className="text-xl font-bold">🌸 Menstrual Tracker</h1>
+              <p className="text-gray-600">Welcome back!</p>
+              <Button onClick={() => setTab("calendar")} className="mt-4">
+                View Calendar
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {tab === "calendar" && (
+          <Card>
+            <CardContent>
+              <h2 className="text-lg font-semibold">🗓️ Calendar</h2>
+              <p className="text-gray-600">Cycle tracking view here...</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {tab === "logs" && (
+          <Card>
+            <CardContent>
+              <h2 className="text-lg font-semibold">🙂 Logs</h2>
+              <p className="text-gray-600">User logs and notes here...</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
-      {/* Bottom Navigation */}
-      <nav className="sticky bottom-0 bg-white rounded-t-3xl shadow-md px-6 py-3">
+      {/* Bottom navigation */}
+      <nav className="bg-white rounded-t-3xl shadow-lg px-6 py-3">
         <div className="grid grid-cols-3 text-center text-sm">
           <button
             onClick={() => setTab("home")}
-            className={`py-2 rounded-2xl flex flex-col items-center ${
-              tab === "home" ? "bg-pink-100 font-medium" : ""
-            }`}
+            className={`py-2 rounded-2xl ${tab === "home" ? "bg-pink-200 font-medium" : ""}`}
           >
-            <HomeIcon className="w-5 h-5 mb-1 text-pink-500" /> Home
+            🏠 Home
           </button>
           <button
             onClick={() => setTab("calendar")}
-            className={`py-2 rounded-2xl flex flex-col items-center ${
-              tab === "calendar" ? "bg-pink-100 font-medium" : ""
-            }`}
+            className={`py-2 rounded-2xl ${tab === "calendar" ? "bg-pink-200 font-medium" : ""}`}
           >
-            <CalendarDays className="w-5 h-5 mb-1 text-pink-500" /> Calendar
+            🗓️ Calendar
           </button>
           <button
-            onClick={() => setTab("insights")}
-            className={`py-2 rounded-2xl flex flex-col items-center ${
-              tab === "insights" ? "bg-pink-100 font-medium" : ""
-            }`}
+            onClick={() => setTab("logs")}
+            className={`py-2 rounded-2xl ${tab === "logs" ? "bg-pink-200 font-medium" : ""}`}
           >
-            <BarChart3 className="w-5 h-5 mb-1 text-pink-500" /> Insights
+            🙂 Logs
           </button>
         </div>
       </nav>
     </div>
   );
 }
+
+export default App;
