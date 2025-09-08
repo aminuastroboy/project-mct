@@ -1,1 +1,0 @@
-# Menstrual Tracker v2\n\nRun locally:\n1. npm install\n2. npm start\n\nBuild:\n1. npm run build\n\nDeploy:\n- Vercel: Output directory = build\n- Netlify: publish = build
