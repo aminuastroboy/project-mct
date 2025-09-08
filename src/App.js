@@ -1,30 +1,53 @@
-import React, { useState } from 'react';
-import Home from './screens/Home';
-import Calendar from './screens/Calendar';
-import Insights from './screens/Insights';
-import Login from './screens/Login';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Card } from "./components/Card";
+import { Logs } from "./components/Logs";
+import { Insights } from "./components/Insights";
+import { Reminder } from "./components/Reminder";
 
-export default function App() {
-  const [tab, setTab] = useState('home');
-  const [user, setUser] = useState(() => localStorage.getItem('m_user') || null);
+function App() {
+  const [logs, setLogs] = useState(() => {
+    const saved = localStorage.getItem("cycleLogs");
+    return saved ? JSON.parse(saved) : [];
+  });
 
-  if (!user) return <Login onLogin={(u) => setUser(u)} />;
+  useEffect(() => {
+    localStorage.setItem("cycleLogs", JSON.stringify(logs));
+  }, [logs]);
+
+  const addLog = (date) => {
+    const newLog = { id: Date.now(), date };
+    setLogs([...logs, newLog]);
+  };
+
+  const deleteLog = (id) => {
+    setLogs(logs.filter((log) => log.id !== id));
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-animated">
-      <div className="flex-1 overflow-y-auto">
-        {tab === 'home' && <Home />}
-        {tab === 'calendar' && <Calendar />}
-        {tab === 'insights' && <Insights />}
-      </div>
+    <div className="p-6 max-w-3xl mx-auto space-y-6">
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-2xl font-bold text-center"
+      >
+        Menstrual Cycle Tracker
+      </motion.h1>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow px-6 py-3">
-        <div className="grid grid-cols-3 text-center text-sm">
-          <button onClick={() => setTab('home')} className={\`py-2 rounded-2xl \${tab === 'home' ? 'bg-petal2 text-white' : ''}\`}>🏠 Home</button>
-          <button onClick={() => setTab('calendar')} className={\`py-2 rounded-2xl \${tab === 'calendar' ? 'bg-petal2 text-white' : ''}\`}>📅 Calendar</button>
-          <button onClick={() => setTab('insights')} className={\`py-2 rounded-2xl \${tab === 'insights' ? 'bg-petal2 text-white' : ''}\`}>📊 Insights</button>
-        </div>
-      </nav>
+      <Card>
+        <Logs logs={logs} addLog={addLog} deleteLog={deleteLog} />
+      </Card>
+
+      <Card>
+        <Insights logs={logs} />
+      </Card>
+
+      <Card>
+        <Reminder />
+      </Card>
     </div>
   );
 }
+
+export default App;

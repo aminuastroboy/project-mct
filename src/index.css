@@ -1,22 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --petal1: #f9a8d4;
-  --petal2: #f472b6;
-  --petal3: #ec4899;
-  --petal4: #d8b4fe;
-}
-
-body { @apply bg-pink-50 font-sans; }
-.bg-animated {
-  background: linear-gradient(270deg, var(--petal1), var(--petal2), var(--petal4), var(--petal3));
-  background-size: 600% 600%;
-  animation: gradientShift 18s ease infinite;
-}
-@keyframes gradientShift {
-  0% { background-position:0% 50% }
-  50% { background-position:100% 50% }
-  100% { background-position:0% 50% }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f9f9fb;
 }
