@@ -1,23 +1,17 @@
-# Menstrual Tracker v2
 
-This is a deploy-ready Create React App project with Tailwind, Framer Motion, Recharts and Confetti. It includes:
+# Menstrual Tracker v2 - Ready for Vercel
 
-- Add / Edit / Delete cycles (persisted in localStorage)
-- Logs, Calendar placeholder
-- Home dashboard with flower, reminders, health tips, insights
-- Confetti celebrations for adding cycles and reminders
+This project is prepared for Create React App and Vercel/Netlify deployments.
 
-Run locally:
+Key notes:
+- No demo data; app starts empty. Data persists to localStorage when user adds cycles/reminders.
+- package.json includes "homepage": "." to avoid blank page on Vercel.
+- vercel.json includes a route rewrite to index.html for SPA routing.
 
-```
-npm install
-npm start
-```
+Local dev:
+1. npm install
+2. npm start
 
-Build:
-
-```
-npm run build
-```
-
-Deploy: push to GitHub and connect to Vercel or Netlify.
+Build for production:
+1. npm run build
+Deploy: push to GitHub and connect to Vercel (Output Directory = build) or deploy to Netlify.

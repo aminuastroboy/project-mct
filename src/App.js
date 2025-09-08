@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+
+import React, {useState} from 'react';
 import Home from './Home';
 import CalendarView from './Calendar';
 import Logs from './Logs';

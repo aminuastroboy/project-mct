@@ -1,3 +1,4 @@
+
 import React,{useState} from 'react';
 export function Tabs({tabs,defaultTab=0}){
   const [active,setActive]=useState(defaultTab);
