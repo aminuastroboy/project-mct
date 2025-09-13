@@ -1,5 +1,5 @@
 {
-  "name": "menstrual-tracker-vite",
+  "name": "menstrual-tracker-final-ui",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -16,7 +16,6 @@
     "lucide-react": "^0.446.0"
   },
   "devDependencies": {
-    "typescript": "^5.4.2",
     "vite": "^5.0.0",
     "@vitejs/plugin-react": "^5.0.0"
   }
