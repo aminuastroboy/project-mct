@@ -1,37 +1,33 @@
-import React, { useState } from "react"
-import { motion } from "framer-motion"
-import Header from "./components/Header"
-import CycleCard from "./components/CycleCard"
-import AddLogForm from "./components/AddLogForm"
-import LogsList from "./components/LogsList"
-import CircleVisualizer from "./components/CircleVisualizer"
+import React, { useEffect, useState } from 'react'
+import Home from './screens/Home'
+import Calendar from './screens/Calendar'
+import Insights from './screens/Insights'
+import ErrorBoundary from './utils/ErrorBoundary'
 
-export default function App() {
-  const [logs, setLogs] = useState([])
-
-  const addLog = (log) => {
-    setLogs((prev) => [...prev, { ...log, id: Date.now() }])
-  }
-
-  const deleteLog = (id) => {
-    setLogs((prev) => prev.filter((log) => log.id !== id))
-  }
+export default function App(){
+  const [tab, setTab] = useState('home')
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-6">
-      <Header />
+    <ErrorBoundary>
+      <div className="app">
+        <header className="header card" style={{marginTop:12}}>
+          <div className="brand">🌸 Menstrual Tracker</div>
+          <div className="small-muted">demo</div>
+        </header>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-3xl space-y-6"
-      >
-        <CycleCard logs={logs} />
-        <CircleVisualizer logs={logs} />
-        <AddLogForm addLog={addLog} />
-        <LogsList logs={logs} deleteLog={deleteLog} />
-      </motion.div>
-    </div>
+        <main style={{paddingTop:12}}>
+          {tab==='home' && <Home />}
+          {tab==='calendar' && <Calendar />}
+          {tab==='insights' && <Insights />}
+        </main>
+
+        <div style={{height:90}} />
+        <nav className="nav" role="navigation" aria-label="main nav">
+          <button className={`btn ${tab==='home'?'active':''}`} onClick={()=>setTab('home')}>🏠 Home</button>
+          <button className={`btn ${tab==='calendar'?'active':''}`} onClick={()=>setTab('calendar')}>📅 Calendar</button>
+          <button className={`btn ${tab==='insights'?'active':''}`} onClick={()=>setTab('insights')}>📊 Insights</button>
+        </nav>
+      </div>
+    </ErrorBoundary>
   )
 }
