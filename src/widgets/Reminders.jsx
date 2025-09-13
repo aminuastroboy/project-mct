@@ -1,13 +1,17 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Confetti from 'react-confetti'
+
 export default function Reminders(){
-  const [items,setItems]=useState([])
-  const [text,setText]=useState('')
-  const [show,setShow]=useState(false)
-  useEffect(()=>{ const s=localStorage.getItem('reminders'); if(s) setItems(JSON.parse(s)) },[])
-  useEffect(()=> localStorage.setItem('reminders', JSON.stringify(items)), [items])
-  function add(){ if(!text.trim()) return; setItems(p=>[...p,{id:Date.now(), text}]); setText(''); setShow(true); setTimeout(()=>setShow(false),2500) }
+  const [items, setItems] = useState([])
+  const [text, setText] = useState('')
+  const [show, setShow] = useState(false)
+
+  useEffect(()=>{ const s = localStorage.getItem('reminders_v2'); if(s) setItems(JSON.parse(s)) }, [])
+  useEffect(()=> localStorage.setItem('reminders_v2', JSON.stringify(items)), [items])
+
+  function add(){ if(!text.trim()) return; setItems(p=>[...p, { id: Date.now(), text }]); setText(''); setShow(true); setTimeout(()=>setShow(false),2200) }
   function del(id){ setItems(p=>p.filter(x=>x.id!==id)) }
+
   return (
     <div>
       {show && <Confetti recycle={false} numberOfPieces={120} colors={['#ec4899','#f472b6','#d8b4fe','#f9a8d4']} />}
