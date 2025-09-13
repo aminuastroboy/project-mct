@@ -1,22 +1,37 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
+import { motion } from "framer-motion"
+import Header from "./components/Header"
+import CycleCard from "./components/CycleCard"
+import AddLogForm from "./components/AddLogForm"
+import LogsList from "./components/LogsList"
+import CircleVisualizer from "./components/CircleVisualizer"
 
 export default function App() {
   const [logs, setLogs] = useState([])
 
-  const addLog = () => {
-    const newLog = { id: Date.now(), date: new Date().toLocaleDateString() }
-    setLogs([...logs, newLog])
+  const addLog = (log) => {
+    setLogs((prev) => [...prev, { ...log, id: Date.now() }])
+  }
+
+  const deleteLog = (id) => {
+    setLogs((prev) => prev.filter((log) => log.id !== id))
   }
 
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: '2rem' }}>
-      <h1>Menstrual Cycle Tracker</h1>
-      <button onClick={addLog}>Add Log</button>
-      <ul>
-        {logs.map(log => (
-          <li key={log.id}>{log.date}</li>
-        ))}
-      </ul>
+    <div className="min-h-screen flex flex-col items-center px-4 py-6">
+      <Header />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-3xl space-y-6"
+      >
+        <CycleCard logs={logs} />
+        <CircleVisualizer logs={logs} />
+        <AddLogForm addLog={addLog} />
+        <LogsList logs={logs} deleteLog={deleteLog} />
+      </motion.div>
     </div>
   )
 }
