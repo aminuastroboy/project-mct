@@ -1,30 +1,44 @@
-import React, { useState } from "react";
-import CycleLog from "./components/CycleLog";
+import React, { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Flower2, CalendarDays, User } from 'lucide-react'
+import Cycle from './components/Cycle'
+import Logs from './components/Logs'
+import Profile from './components/Profile'
+
+const tabs = [
+  { id: 'cycle', icon: <Flower2 size={24} />, component: <Cycle /> },
+  { id: 'logs', icon: <CalendarDays size={24} />, component: <Logs /> },
+  { id: 'profile', icon: <User size={24} />, component: <Profile /> },
+]
 
 export default function App() {
-  const [logs, setLogs] = useState([]);
-
-  const addLog = () => {
-    const date = new Date().toLocaleDateString();
-    setLogs([...logs, { date }]);
-  };
+  const [active, setActive] = useState('cycle')
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-dark via-secondary to-primary">
-      <div className="w-full max-w-md bg-gray-900 rounded-2xl shadow-xl p-6 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-primary drop-shadow-md">
-          🌸 Menstrual Cycle Tracker
-        </h1>
-
-        <button
-          onClick={addLog}
-          className="w-full bg-primary hover:bg-pink-600 text-white py-3 rounded-xl font-semibold transition shadow-md"
+    <div className="h-screen flex flex-col">
+      <div className="flex-1 overflow-y-auto p-6">
+        <motion.div
+          key={active}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          Add Log
-        </button>
-
-        <CycleLog logs={logs} />
+          {tabs.find(t => t.id === active)?.component}
+        </motion.div>
       </div>
+      <nav className="h-16 bg-gray-900 border-t border-gray-700 flex justify-around items-center">
+        {tabs.map(t => (
+          <button
+            key={t.id}
+            onClick={() => setActive(t.id)}
+            className={`p-2 rounded-full transition ${
+              active === t.id ? 'text-pink-400' : 'text-gray-400'
+            }`}
+          >
+            {t.icon}
+          </button>
+        ))}
+      </nav>
     </div>
-  );
+  )
 }
