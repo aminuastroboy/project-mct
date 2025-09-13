@@ -1,10 +1,23 @@
-Menstrual Tracker — Final UI (Vite + React)
-Run locally:
-1. npm install
-2. npm run dev
+# Menstrual Tracker Final UI
 
-Build:
-1. npm run build
-2. npm run preview
+A menstrual cycle tracking app with logs, animations, and insights.
 
-Deploy: push to Git and deploy to Vercel (Vite autodetected).
+## 🚀 Run Locally
+
+```bash
+npm install
+npm run dev
+```
+
+Visit http://localhost:5173
+
+## 📦 Build for Production
+
+```bash
+npm run build
+npm run preview
+```
+
+## ✅ Deploy on Vercel
+
+Just push this repo to GitHub and connect to Vercel.
