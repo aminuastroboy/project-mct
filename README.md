@@ -1,23 +1,14 @@
-# Menstrual Tracker Final UI
+# Menstrual Tracker — Deploy Ready (Vite + React)
 
-A menstrual cycle tracking app with logs, animations, and insights.
+This is a deploy-ready Vite + React project (ESM) configured to work on Vercel.
+It includes localStorage persistence and a small demo dataset on first run.
 
-## 🚀 Run Locally
+Run locally:
+1. npm install
+2. npm run dev  (open http://localhost:5173)
 
-```bash
-npm install
-npm run dev
-```
+Build / preview production:
+1. npm run build
+2. npm run preview
 
-Visit http://localhost:5173
-
-## 📦 Build for Production
-
-```bash
-npm run build
-npm run preview
-```
-
-## ✅ Deploy on Vercel
-
-Just push this repo to GitHub and connect to Vercel.
+Deploy to Vercel: connect repository and Vercel will detect Vite automatically.
