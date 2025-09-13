@@ -4,9 +4,9 @@ import HealthTips from '../widgets/HealthTips'
 import Reminders from '../widgets/Reminders'
 
 export default function Insights(){
-  const cycles = JSON.parse(localStorage.getItem('cycles')||'[]')
+  const cycles = JSON.parse(localStorage.getItem('cycles_v2')||'[]')
   return (
-    <div>
+    <div style={{padding:12}}>
       <div className="card"><InsightsSmall cycles={cycles} /></div>
       <div style={{height:12}} />
       <div className="card"><HealthTips/></div>
