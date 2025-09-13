@@ -1,44 +1,30 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Flower2, CalendarDays, User } from 'lucide-react'
-import Cycle from './components/Cycle'
-import Logs from './components/Logs'
-import Profile from './components/Profile'
+import React from 'react'
+import Home from './pages/Home.jsx'
+import Logs from './pages/Logs.jsx'
+import Profile from './pages/Profile.jsx'
+import FloatingNav from './components/FloatingNav.jsx'
+import useLocalStorage from './hooks/useLocalStorage.js'
 
-const tabs = [
-  { id: 'cycle', icon: <Flower2 size={24} />, component: <Cycle /> },
-  { id: 'logs', icon: <CalendarDays size={24} />, component: <Logs /> },
-  { id: 'profile', icon: <User size={24} />, component: <Profile /> },
-]
+export default function App(){
+  const [page, setPage] = useLocalStorage('mct_page', 'home')
+  const [user, setUser] = useLocalStorage('mct_user', { name: 'Amina', email: 'amina@example.com' })
+  const [logs, setLogs] = useLocalStorage('mct_logs', [
+    { id: Date.now()-86400000, date: new Date(Date.now()-86400000).toISOString().slice(0,10), note: 'Demo - cramps' }
+  ])
 
-export default function App() {
-  const [active, setActive] = useState('cycle')
+  function addLog(item){ setLogs(prev => prev ? [item, ...prev] : [item]) }
+  function updateLog(id,data){ setLogs(prev => prev.map(x=> x.id===id? {...x,...data}: x)) }
+  function deleteLog(id){ setLogs(prev => prev.filter(x=> x.id!==id)) }
+  function logout(){ setUser(null); setPage('home') }
 
   return (
-    <div className="h-screen flex flex-col">
-      <div className="flex-1 overflow-y-auto p-6">
-        <motion.div
-          key={active}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {tabs.find(t => t.id === active)?.component}
-        </motion.div>
+    <div className="min-h-screen">
+      <div className="container">
+        {page==='home' && <Home logs={logs||[]} addLog={addLog} />}
+        {page==='logs' && <Logs logs={logs||[]} addLog={addLog} updateLog={updateLog} deleteLog={deleteLog} />}
+        {page==='profile' && <Profile user={user} setUser={setUser} logout={logout} setLogs={setLogs} />}
       </div>
-      <nav className="h-16 bg-gray-900 border-t border-gray-700 flex justify-around items-center">
-        {tabs.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setActive(t.id)}
-            className={`p-2 rounded-full transition ${
-              active === t.id ? 'text-pink-400' : 'text-gray-400'
-            }`}
-          >
-            {t.icon}
-          </button>
-        ))}
-      </nav>
+      <FloatingNav page={page} setPage={setPage} />
     </div>
   )
 }
