@@ -1,19 +1,18 @@
 {
   "name": "Cycle Care",
   "short_name": "CycleCare",
-  "description": "Track your cycle, ovulation, health tips and logs.",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#fde8f6",
-  "theme_color": "#ec4899",
+  "background_color": "#ffffff",
+  "theme_color": "#f472b6",
   "icons": [
     {
-      "src": "/icons/cyclecare-icon-192.png",
+      "src": "/logo192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/cyclecare-icon-512.png",
+      "src": "/logo512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

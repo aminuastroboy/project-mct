@@ -1,19 +1,11 @@
-const CACHE_NAME = 'cyclecare-v1';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/src/main.jsx'
-];
-
-self.addEventListener('install', (ev)=>{
-  ev.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS)));
-  self.skipWaiting();
+self.addEventListener('install', (e) => {
+  e.waitUntil(self.skipWaiting());
 });
 
-self.addEventListener('activate', (ev)=>{
-  ev.waitUntil(self.clients.claim());
+self.addEventListener('activate', (e) => {
+  e.waitUntil(self.clients.claim());
 });
 
-self.addEventListener('fetch', (ev)=>{
-  ev.respondWith(caches.match(ev.request).then(r=> r || fetch(ev.request)));
+self.addEventListener('fetch', (event) => {
+  event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
 });
