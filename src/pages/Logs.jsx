@@ -1,48 +1,62 @@
-import React, { useState } from 'react'
-import LogCard from '../components/LogCard.jsx'
+import React, { useState, useEffect } from 'react'
 
-export default function Logs({ logs, addLog, updateLog, deleteLog }){
-  const [show, setShow] = useState(false)
-  const [date, setDate] = useState(new Date().toISOString().slice(0,10))
-  const [note, setNote] = useState('')
+export default function Logs(){
+  const [logs, setLogs] = useState([])
+  const [text, setText] = useState('')
 
-  function submit(e){
-    e.preventDefault()
-    const item = { id: Date.now(), date, note }
-    addLog(item)
-    setDate(new Date().toISOString().slice(0,10))
-    setNote('')
-    setShow(false)
+  useEffect(()=>{
+    const saved = JSON.parse(localStorage.getItem('cc_logs')||'[]')
+    setLogs(saved)
+  },[])
+
+  function add(){
+    if (!text.trim()) return
+    const entry = { id: Date.now(), date: new Date().toISOString(), text }
+    const updated = [...logs, entry]
+    setLogs(updated)
+    localStorage.setItem('cc_logs', JSON.stringify(updated))
+    // if mentions period -> set cycleStart
+    if (text.toLowerCase().includes('period')){
+      localStorage.setItem('cycleStart', new Date().toISOString())
+    }
+    setText('')
+  }
+
+  function del(id){
+    const updated = logs.filter(l=>l.id!==id)
+    setLogs(updated)
+    localStorage.setItem('cc_logs', JSON.stringify(updated))
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Logs</h2>
-        <button className="btn btn-primary" onClick={()=>setShow(true)}>+ Add Log</button>
-      </div>
-
-      <div className="space-y-3">
-        {(!logs || logs.length===0) && <div className="small">No logs yet. Add your first entry.</div>}
-        {logs && logs.map(l=> <LogCard key={l.id} item={l} onDelete={()=>deleteLog(l.id)} />)}
-      </div>
-
-      { show && (
-        <div style={{position:'fixed',inset:0,display:'flex',alignItems:'center',justifyContent:'center',zIndex:60}}>
-          <div style={{position:'absolute',inset:0,background:'rgba(0,0,0,0.5)'}} onClick={()=>setShow(false)}></div>
-          <form onSubmit={submit} className="card" style={{minWidth:320,zIndex:70}}>
-            <h3 className="text-lg font-semibold mb-2">Add Log</h3>
-            <label className="small">Date</label>
-            <input className="input mt-1" type="date" value={date} onChange={e=>setDate(e.target.value)} required />
-            <label className="small mt-2">Note</label>
-            <textarea className="input mt-1" rows="3" value={note} onChange={e=>setNote(e.target.value)} />
-            <div className="flex gap-2 mt-4 justify-end">
-              <button type="button" className="input" onClick={()=>setShow(false)}>Cancel</button>
-              <button type="submit" className="btn btn-primary">Save</button>
-            </div>
-          </form>
+    <div className="space-y-4">
+      <div className="card">
+        <div className="flex gap-2">
+          <input className="flex-1 p-2 border rounded-lg" placeholder="Add a log (e.g. Period started, cramps)" value={text} onChange={e=>setText(e.target.value)} />
+          <button className="btn-primary" onClick={add}>Add</button>
         </div>
-      )}
+      </div>
+
+      <div>
+        {logs.length===0 && <div className="small">No logs yet — add your first entry.</div>}
+        {logs.slice().reverse().map(l=>(
+          <div key={l.id} className="card mb-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <div style={{fontWeight:700}}>{new Date(l.date).toLocaleString()}</div>
+                <div className="small mt-1">{l.text}</div>
+              </div>
+              <div className="flex flex-col items-end">
+                <button className="small text-red-500" onClick={()=>del(l.id)}>Delete</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-2">
+        <button className="btn-primary" onClick={()=>{ window.location.href='#profile' }}>Go to Profile</button>
+      </div>
     </div>
   )
 }

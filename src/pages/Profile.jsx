@@ -1,46 +1,42 @@
 import React from 'react'
-import useLocalStorage from '../hooks/useLocalStorage.js'
 
 export default function Profile(){
-  const [user, setUser] = useLocalStorage('mct_user', { name: 'Amina', contact: 'amina@example.com' })
-  // logs state not needed here except for reset option
-  // const [, setLogs] = useLocalStorage('mct_logs', [])
-
+  const user = JSON.parse(localStorage.getItem('cc_user')||'{}')
   function logout(){
-    localStorage.removeItem('mct_user')
-    // keep logs by default
+    localStorage.removeItem('cc_user')
     window.location.reload()
   }
-
-  function resetAll(){
-    if (confirm('Reset all data? This cannot be undone.')){
-      localStorage.removeItem('mct_logs')
-      localStorage.removeItem('mct_user')
-      window.location.reload()
-    }
-  }
-
   return (
-    <div className="space-y-4">
+    <div id="profile" className="space-y-4">
       <div className="card flex items-center gap-4">
-        <div style={{width:64,height:64,borderRadius:12,background:'linear-gradient(90deg,#6C63FF,#FF4D6D)',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontWeight:700}}>A</div>
+        <div style={{width:64,height:64,borderRadius:14,background:'linear-gradient(90deg,#fbcfe8,#ec4899)',display:'flex',alignItems:'center',justifyContent:'center'}}>🌸</div>
         <div>
-          <div className="font-semibold text-lg">{user?.name}</div>
-          <div className="small">{user?.contact}</div>
+          <div style={{fontWeight:700}}>{user.name || user.username || 'Amina'}</div>
+          <div className="small">{user.username || ''}</div>
         </div>
       </div>
 
       <div className="card">
-        <h3 className="text-lg font-semibold">Settings</h3>
-        <div className="mt-3 space-y-2">
-          <div className="small">Cycle length: 28 days</div>
-          <div className="small">Luteal phase: 14 days</div>
+        <h3 style={{fontWeight:700,color:'#6b7280'}}>Reminders</h3>
+        <div className="mt-2 space-y-2">
+          <div className="p-3 rounded-xl" style={{background:'#fff7f9'}}>
+            <div style={{fontWeight:700}}>Period Start Reminder</div>
+            <div className="small">On</div>
+          </div>
+          <div className="p-3 rounded-xl" style={{background:'#fff7f9'}}>
+            <div style={{fontWeight:700}}>Ovulation Reminder</div>
+            <div className="small">On</div>
+          </div>
+          <div className="p-3 rounded-xl" style={{background:'#fff7f9'}}>
+            <div style={{fontWeight:700}}>Medication Reminder</div>
+            <div className="small">Off</div>
+          </div>
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <button className="btn-primary" onClick={logout}>Logout</button>
-        <button className="input" onClick={resetAll}>Reset Data</button>
+        <button className="p-3 rounded-lg border" onClick={()=>{ localStorage.removeItem('cc_logs'); localStorage.removeItem('cycleStart'); alert('Data reset') }}>Reset Data</button>
       </div>
     </div>
   )
