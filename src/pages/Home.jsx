@@ -4,7 +4,7 @@ import HealthTips from '../components/HealthTips'
 import { parseISO, differenceInDays } from 'date-fns'
 import { nextPeriodStart, ovulationDay, fertileWindow } from '../utils/cycleCalculator'
 
-export default function Home(){
+
   const [cycleStart, setCycleStart] = useState(null)
   const [cycleLength, setCycleLength] = useState(28)
   const [periodLength, setPeriodLength] = useState(5)
@@ -41,8 +41,8 @@ export default function Home(){
   return (
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-pink-600">Home</h2>
-        <div className="small">Welcome</div>
+
+
       </div>
 
       <div className="flex flex-col items-center gap-4">
