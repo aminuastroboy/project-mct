@@ -6,6 +6,7 @@ import Calendar from './pages/Calendar'
 import Logs from './pages/Logs'
 import Profile from './pages/Profile'
 import BottomNav from './components/BottomNav'
+import InstallButton from './components/InstallButton'
 
 export default function App(){
   const [showSplash, setShowSplash] = useState(true)
@@ -30,6 +31,7 @@ export default function App(){
       </div>
 
       <BottomNav active={active} setActive={setActive} />
+      <InstallButton />
     </div>
   )
 }
