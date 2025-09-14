@@ -1,3 +1,4 @@
+import InstallButton from "./components/InstallButton";
 import React, { useEffect, useState } from 'react'
 import Splash from './pages/Splash'
 import Login from './pages/Login'
@@ -26,10 +27,13 @@ export default function App(){
         {active==='home' && <Home />}
         {active==='calendar' && <Calendar />}
         {active==='logs' && <Logs />}
-        <div id="profile" className="mt-6"><Profile /></div>
-      </div>
+        <div id="profile" className="mt-6"><Profile />  <InstallButton />
+</div>
+        <InstallButton />
+</div>
 
       <BottomNav active={active} setActive={setActive} />
-    </div>
+      <InstallButton />
+</div>
   )
 }
