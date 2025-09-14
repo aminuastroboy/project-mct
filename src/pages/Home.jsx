@@ -1,45 +1,83 @@
-import React from 'react'
-import CycleRing from '../components/CycleRing.jsx'
-import { format, addDays } from 'date-fns'
+import React, { useState, useEffect } from 'react'
+import CycleRing from '../components/CycleRing'
+import HealthTips from '../components/HealthTips'
+import { parseISO, differenceInDays } from 'date-fns'
+import { nextPeriodStart, ovulationDay, fertileWindow } from '../utils/cycleCalculator'
 
-const tips = [
-  "Drink enough water today 💧",
-  "Eat fruits and veggies 🍎🥦",
-  "Get at least 7 hours of sleep 😴",
-  "Light exercise boosts mood 🏃‍♀️",
-]
-const messages = [
-  "You're stronger than you think 🌸",
-  "Take care of yourself, always ❤️",
-  "Every day is a fresh start 🌞",
-  "Your health matters most 🌺",
-]
+export default function Home(){
+  const [cycleStart, setCycleStart] = useState(null)
+  const [cycleLength, setCycleLength] = useState(28)
+  const [periodLength, setPeriodLength] = useState(5)
+  const [today, setToday] = useState(new Date())
 
-export default function Home({ user }){
-  const today = new Date()
-  const tip = tips[today.getDate() % tips.length]
-  const msg = messages[today.getDate() % messages.length]
+  useEffect(()=> {
+    const cs = localStorage.getItem('cc_cycleStart')
+    const cl = localStorage.getItem('cc_cycleLength')
+    const pl = localStorage.getItem('cc_periodLength')
+    setCycleStart(cs ? parseISO(cs) : null)
+    if(cl) setCycleLength(Number(cl))
+    if(pl) setPeriodLength(Number(pl))
+  },[])
 
-  // Get cycle info (if any)
-  const cycleStart = localStorage.getItem('cycleStart')
-  const nextOv = cycleStart ? format(addDays(new Date(cycleStart), 14), 'MMM d') : '—'
+  function saveSettings(e){
+    e.preventDefault()
+    if(cycleStart) localStorage.setItem('cc_cycleStart', cycleStart.toISOString().slice(0,10))
+    localStorage.setItem('cc_cycleLength', cycleLength)
+    localStorage.setItem('cc_periodLength', periodLength)
+    alert('Saved')
+  }
+
+  let nextPeriod = null
+  let ov = null
+  let fertile = null
+  if(cycleStart){
+    nextPeriod = nextPeriodStart(cycleStart, cycleLength)
+    ov = ovulationDay(cycleStart, cycleLength)
+    fertile = fertileWindow(cycleStart, cycleLength)
+  }
+
+  const progressDay = cycleStart ? (differenceInDays(today, cycleStart) % cycleLength) + 1 : 1
 
   return (
-    <div className="space-y-4">
-      <div className="card text-center">
-        <CycleRing day={3} total={28} />
-        <div className="mt-3 font-semibold" style={{color:'#ec4899'}}>Day 3 of 28</div>
-        <div className="small mt-1">Next Ovulation: <span style={{color:'#ec4899',fontWeight:700}}>{nextOv} 🌸</span></div>
+    <div className="p-4 space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-pink-600">Home</h2>
+        <div className="small">Welcome</div>
       </div>
 
-      <div className="card">
-        <h3 style={{fontWeight:700,color:'#6b7280'}}>Health Tip</h3>
-        <p className="mt-2">{tip}</p>
+      <div className="flex flex-col items-center gap-4">
+        <CycleRing day={progressDay} total={cycleLength} />
+        {nextPeriod ? (
+          <div className="text-center">
+            <div className="font-semibold text-pink-600">Next Period: {nextPeriod.toISOString().slice(0,10)}</div>
+            <div className="small mt-1">{Math.max(0, differenceInDays(nextPeriod, today))} days remaining</div>
+            <div className="small mt-1">Ovulation: {ov.toISOString().slice(0,10)}</div>
+          </div>
+        ) : (
+          <div className="small">No cycle start set. Add a period log to enable predictions.</div>
+        )}
       </div>
 
-      <div className="card" style={{background:'#fff0f6'}}>
-        <p style={{fontWeight:700,color:'#ec4899'}}>{msg}</p>
-      </div>
+      <HealthTips />
+
+      <form onSubmit={saveSettings} className="card mt-2">
+        <h3 className="font-semibold text-gray-700">Cycle Settings</h3>
+        <label className="small mt-2">Last Period Start</label>
+        <input type="date" value={cycleStart? cycleStart.toISOString().slice(0,10):''} onChange={e=>setCycleStart(e.target.value? new Date(e.target.value): null)} className="mt-1 p-2 border rounded w-full" />
+        <div className="flex gap-2 mt-2">
+          <div className="flex-1">
+            <label className="small">Cycle Length</label>
+            <input type="number" min="20" max="40" value={cycleLength} onChange={e=>setCycleLength(e.target.value)} className="mt-1 p-2 border rounded w-full" />
+          </div>
+          <div className="flex-1">
+            <label className="small">Period Length</label>
+            <input type="number" min="2" max="10" value={periodLength} onChange={e=>setPeriodLength(e.target.value)} className="mt-1 p-2 border rounded w-full" />
+          </div>
+        </div>
+        <div className="flex gap-2 mt-4">
+          <button className="btn-primary" type="submit">Save Settings</button>
+        </div>
+      </form>
     </div>
   )
 }

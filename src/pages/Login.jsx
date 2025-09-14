@@ -1,20 +1,19 @@
 import React, { useState } from 'react'
 
 export default function Login({ onLogin }){
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [isSignup, setIsSignup] = useState(false)
+  const [user, setUser] = useState('')
+  const [pass, setPass] = useState('')
+  const [signup, setSignup] = useState(false)
 
   function submit(e){
     e.preventDefault()
-    if (isSignup){
-      const user = { username, password, name: username }
-      localStorage.setItem('cc_user', JSON.stringify(user))
-      onLogin(user)
+    if(signup){
+      localStorage.setItem('cc_user', JSON.stringify({ username:user, password:pass }))
+      onLogin({ username:user })
     } else {
       const saved = JSON.parse(localStorage.getItem('cc_user') || 'null')
-      if (saved && saved.password === password){
-        onLogin(saved)
+      if(saved && saved.password===pass){
+        onLogin({ username: saved.username })
       } else {
         alert('Invalid login')
       }
@@ -22,13 +21,15 @@ export default function Login({ onLogin }){
   }
 
   return (
-    <div className="flex items-center justify-center h-screen" style={{background:'linear-gradient(180deg,#fff0f6,#fff7fb)'}}>
-      <form onSubmit={submit} className="card w-80 rounded-xl-2 p-6">
-        <h2 style={{color:'#ec4899',fontSize:18,fontWeight:700}}>Welcome to Cycle Care</h2>
-        <input className="mt-4 p-2 border rounded-lg w-full" placeholder="Username" value={username} onChange={e=>setUsername(e.target.value)} required />
-        <input className="mt-3 p-2 border rounded-lg w-full" type="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} required />
-        <button className="btn-primary w-full mt-4" type="submit">{isSignup ? 'Sign Up' : 'Login'}</button>
-        <p className="small mt-3 text-center" onClick={()=>setIsSignup(!isSignup)} style={{cursor:'pointer'}}>{isSignup ? 'Already have an account? Login' : 'Don\'t have an account? Sign Up'}</p>
+    <div className="h-screen flex items-center justify-center">
+      <form onSubmit={submit} className="w-80 card">
+        <h2 className="text-lg font-bold text-pink-600">{signup? 'Sign up':'Login'} to Cycle Care</h2>
+        <input className="mt-3 p-2 border rounded" placeholder="Username" value={user} onChange={e=>setUser(e.target.value)} required />
+        <input className="mt-2 p-2 border rounded" placeholder="Password" type="password" value={pass} onChange={e=>setPass(e.target.value)} required />
+        <button className="mt-4 btn-primary w-full" type="submit">{signup? 'Sign up':'Login'}</button>
+        <p className="mt-3 text-sm text-center text-gray-500 cursor-pointer" onClick={()=>setSignup(s=>!s)}>
+          {signup? 'Have an account? Login' : 'Don\'t have an account? Sign up'}
+        </p>
       </form>
     </div>
   )

@@ -1,63 +1,58 @@
-import React, { useState, useEffect } from 'react'
-import { addDays } from 'date-fns'
+import React, { useEffect, useState } from 'react'
+import CalendarView from '../components/CalendarView'
+import { parseISO } from 'date-fns'
+import { nextPeriodStart, ovulationDay, fertileWindow } from '../utils/cycleCalculator'
 
 export default function Calendar(){
-  const [logs, setLogs] = useState([])
   const [cycleStart, setCycleStart] = useState(null)
-
-  useEffect(()=>{
-    const saved = JSON.parse(localStorage.getItem('cc_logs')||'[]')
-    setLogs(saved)
-    const cs = localStorage.getItem('cycleStart')
-    if (cs) setCycleStart(new Date(cs))
+  const [cycleLength, setCycleLength] = useState(28)
+  const [periodLength, setPeriodLength] = useState(5)
+  useEffect(()=> {
+    const cs = localStorage.getItem('cc_cycleStart')
+    const cl = localStorage.getItem('cc_cycleLength')
+    const pl = localStorage.getItem('cc_periodLength')
+    setCycleStart(cs ? parseISO(cs) : null)
+    if(cl) setCycleLength(Number(cl))
+    if(pl) setPeriodLength(Number(pl))
   },[])
 
-  const cycleLength = 28, periodLen = 5
+  // build marked map for current month
   const today = new Date()
-  const year = today.getFullYear(), month = today.getMonth()
-  const daysInMonth = new Date(year, month+1, 0).getDate()
+  const year = today.getFullYear()
+  const month = today.getMonth()
 
-  const loggedDays = logs.map(l=> new Date(l.date).getDate())
+  const marked = {}
+  if(cycleStart){
+    // mark each period block for several cycles
+    let start = cycleStart
+    for(let i=0;i<6;i++){
+      const pStart = nextPeriodStart(start, cycleLength)
+      for(let d=0; d<periodLength; d++){
+        const dt = new Date(pStart); dt.setDate(pStart.getDate()+d)
+        const key = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`
+        marked[key] = { type: 'period', label: 'Period' }
+      }
+      // fertile window
+      const fw = fertileWindow(start, cycleLength)
+      for(let dt=new Date(fw.start); dt<=fw.end; dt.setDate(dt.getDate()+1)){
+        const key = `${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}`
+        if(!marked[key]) marked[key] = { type: 'fertile', label: 'Fertile' }
+      }
+      // ovulation
+      const ov = ovulationDay(start, cycleLength)
+      const keyOv = `${ov.getFullYear()}-${ov.getMonth()+1}-${ov.getDate()}`
+      marked[keyOv] = { type: 'ovulation', label: 'Ovulation' }
 
-  let predicted = []
-  if (cycleStart){
-    let next = new Date(cycleStart)
-    // advance until within current month or beyond
-    while (next.getMonth() < month) next = addDays(next, cycleLength)
-    // collect period days for that cycle and maybe next
-    for (let i=0;i<periodLen;i++){
-      const d = addDays(next, i)
-      if (d.getMonth()===month) predicted.push(d.getDate())
+      start = pStart
     }
-    // ovulation = +14
-    const ov = addDays(next,14)
-    var ovDay = ov.getMonth()===month ? ov.getDate() : null
   }
 
-  const cells = Array.from({length: daysInMonth}, (_,i)=>i+1)
-
   return (
-    <div className="space-y-3">
-      <div className="card p-3">
-        <h3 style={{fontWeight:700,color:'#6b7280'}}>Calendar</h3>
-        <div className="grid grid-cols-7 gap-2 mt-3 text-center">
-          {cells.map(d=>{
-            const isToday = d===today.getDate()
-            const isLogged = loggedDays.includes(d)
-            const isPred = predicted.includes(d)
-            const isOv = typeof ovDay==='number' && ovDay===d
-            return (
-              <div key={d} className="p-2 rounded-lg shadow" style={{background: isToday? '#fde8f6': isLogged? '#d1fae5': isPred? '#fff1f2':'#fff'}}>
-                <div style={{fontWeight:isToday?700:500}}>{d}</div>
-                <div className="small">
-                  {isOv? '🌸':''}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+    <div className="p-4 space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-pink-600">Calendar</h2>
       </div>
-      <div className="small">Legend: 🌸 = predicted ovulation, pink = predicted period, green = logged day</div>
+      <CalendarView year={year} month={month} marked={marked} />
     </div>
   )
 }
