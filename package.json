@@ -1,5 +1,5 @@
 {
-  "name": "menstrual-tracker-final",
+  "name": "cycle-care",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,6 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "framer-motion": "^10.16.4",
     "lucide-react": "^0.446.0",
     "date-fns": "^2.30.0"
   },
