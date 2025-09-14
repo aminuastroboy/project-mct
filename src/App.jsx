@@ -1,34 +1,35 @@
-import React, { useState, useEffect } from 'react'
-import Splash from './pages/Splash.jsx'
-import Login from './pages/Login.jsx'
-import Home from './pages/Home.jsx'
-import Calendar from './pages/Calendar.jsx'
-import Logs from './pages/Logs.jsx'
-import Navbar from './components/Navbar.jsx'
+import React, { useEffect, useState } from 'react'
+import Splash from './pages/Splash'
+import Login from './pages/Login'
+import Home from './pages/Home'
+import Calendar from './pages/Calendar'
+import Logs from './pages/Logs'
+import Profile from './pages/Profile'
+import BottomNav from './components/BottomNav'
 
 export default function App(){
   const [showSplash, setShowSplash] = useState(true)
   const [user, setUser] = useState(null)
-  const [tab, setTab] = useState('home')
+  const [active, setActive] = useState('home')
 
-  useEffect(()=>{
-    const saved = localStorage.getItem('cc_user')
-    if (saved) setUser(JSON.parse(saved))
+  useEffect(()=> {
+    const raw = localStorage.getItem('cc_user')
+    if(raw) setUser(JSON.parse(raw))
   },[])
 
-  if (showSplash) return <Splash onFinish={()=>setShowSplash(false)} />
-
-  if (!user) return <Login onLogin={(u)=>{ localStorage.setItem('cc_user', JSON.stringify(u)); setUser(u) }} />
+  if(showSplash) return <Splash onFinish={()=>setShowSplash(false)} />
+  if(!user) return <Login onLogin={(u)=>{ setUser(u); localStorage.setItem('cc_user', JSON.stringify(u)) }} />
 
   return (
-    <div className="app-shell">
-      <div className="container">
-        {tab==='home' && <Home user={user} />}
-        {tab==='calendar' && <Calendar />}
-        {tab==='logs' && <Logs />}
+    <div className="min-h-screen pb-24">
+      <div className="max-w-xl mx-auto">
+        {active==='home' && <Home />}
+        {active==='calendar' && <Calendar />}
+        {active==='logs' && <Logs />}
+        <div id="profile" className="mt-6"><Profile /></div>
       </div>
 
-      <Navbar tab={tab} setTab={setTab} />
+      <BottomNav active={active} setActive={setActive} />
     </div>
   )
 }
