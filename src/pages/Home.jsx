@@ -80,4 +80,3 @@ import { nextPeriodStart, ovulationDay, fertileWindow } from '../utils/cycleCalc
       </form>
     </div>
   )
-}
